@@ -1,0 +1,137 @@
+const MASCOT_NAME = 'pet'
+const BODY_RADIUS = 1
+const BODY_BREATHE_HZ = 0.42
+const BODY_HOME_POS: readonly [number, number, number] = [0, 0.1, 0]
+const BODY_BASE_SCALE = 0.55
+const DRIFT_RADIUS = 0.85
+const DRIFT_ACTIVITY_FLOOR = 0.05
+const CAMERA_FOV_DEG = 28
+const CAMERA_NEAR = 0.1
+const CAMERA_FAR = 20
+const CAMERA_Z_DEFAULT = 12
+const SMOOTH_K = 7
+const SMOOTH_K_REDUCED = 3
+const POINTER_SMOOTH_K = 12
+const EYE_FOLLOW_K = 6
+const EYE_FOLLOW_K_REDUCED = 3
+const EYE_HALF_SPACING = 0.18
+const EYE_HEIGHT = 0.34
+const EYE_VERTICAL_OFFSET = 0.16
+const EYE_PLANE_WIDTH = 0.26
+const EYE_FRONT_OFFSET = 0.5
+const MOUTH_VERTICAL_OFFSET = -0.32
+const MOUTH_PLANE_WIDTH = 0.5
+const MOUTH_PLANE_HEIGHT = 0.22
+const MOUTH_FRONT_OFFSET = 1.05
+const PUPIL_BASE_RADIUS = 0.28
+const PUPIL_TRACK_REACH = 0.32
+const BLINK_INTERVAL_MIN_S = 3
+const BLINK_INTERVAL_MAX_S = 7
+const BLINK_DURATION_S = 0.12
+const SACCADE_INTERVAL_MIN_S = 0.4
+const SACCADE_INTERVAL_MAX_S = 1.2
+const SACCADE_AMPLITUDE = 0.04
+const POINTER_SPEED_LOW = 50
+const POINTER_SPEED_HIGH = 800
+const POINTER_SPEED_ERRATIC = 1500
+const POINTER_DIST_NEAR_PX = 220
+const POINTER_DIST_FAR_PX = 900
+const POINTER_STALK_SPEED_LOW = 30
+const POINTER_STALK_SPEED_HIGH = 180
+const DRAG_THRESHOLD_PX = 4
+const MULTI_TAP_WINDOW_MS = 350
+const IDLE_BOREDOM_AFTER_S = 30
+const IDLE_LONELY_AFTER_S = 10
+const LEAVE_LONELY_RAMP_PER_S = 0.15
+const CHANNEL_DECAY_S = {
+  affection: 30,
+  affinity: Number.POSITIVE_INFINITY,
+  annoyance: 3,
+  attention: 4,
+  boredom: 600,
+  cheer: 0.6,
+  curiosity: 0.8,
+  dizzy: 0.5,
+  energy: 1800,
+  excitement: 0.5,
+  fatigue: 3600,
+  heat: 0.6,
+  hunger: 1800,
+  joy: 0.6,
+  loneliness: 40,
+  magnetism: 1.5,
+  worry: 4
+} as const
+const AFFINITY_TIERS = [
+  { interactions: 0, label: 'shy' },
+  { interactions: 10, label: 'curious' },
+  { interactions: 50, label: 'bold' },
+  { interactions: 200, label: 'bestFriend' },
+  { interactions: 1000, label: 'lifelong' }
+] as const
+const COLOR_BODY = 'oklch(0.99 0.003 250)'
+const COLOR_HEAT = 'oklch(0.78 0.20 50)'
+const COLOR_JOY_GLOW = 'oklch(0.90 0.18 100)'
+const COLOR_IRIS = 'oklch(0.0 0 0)'
+const COLOR_PUPIL = 'oklch(0.0 0 0)'
+const COLOR_SCLERA = 'oklch(0.99 0.003 90)'
+const COLOR_MOUTH = 'oklch(0.32 0.10 25)'
+const COLOR_BROW = 'oklch(0.0 0 0)'
+export type ChannelName = keyof typeof CHANNEL_DECAY_S
+export {
+  AFFINITY_TIERS,
+  BLINK_DURATION_S,
+  BLINK_INTERVAL_MAX_S,
+  BLINK_INTERVAL_MIN_S,
+  BODY_BASE_SCALE,
+  BODY_BREATHE_HZ,
+  BODY_HOME_POS,
+  BODY_RADIUS,
+  CAMERA_FAR,
+  CAMERA_FOV_DEG,
+  CAMERA_NEAR,
+  CAMERA_Z_DEFAULT,
+  CHANNEL_DECAY_S,
+  COLOR_BODY,
+  COLOR_BROW,
+  COLOR_HEAT,
+  COLOR_IRIS,
+  COLOR_JOY_GLOW,
+  COLOR_MOUTH,
+  COLOR_PUPIL,
+  COLOR_SCLERA,
+  DRAG_THRESHOLD_PX,
+  DRIFT_ACTIVITY_FLOOR,
+  DRIFT_RADIUS,
+  EYE_FOLLOW_K,
+  EYE_FOLLOW_K_REDUCED,
+  EYE_FRONT_OFFSET,
+  EYE_HALF_SPACING,
+  EYE_HEIGHT,
+  EYE_PLANE_WIDTH,
+  EYE_VERTICAL_OFFSET,
+  IDLE_BOREDOM_AFTER_S,
+  IDLE_LONELY_AFTER_S,
+  LEAVE_LONELY_RAMP_PER_S,
+  MASCOT_NAME,
+  MOUTH_FRONT_OFFSET,
+  MOUTH_PLANE_HEIGHT,
+  MOUTH_PLANE_WIDTH,
+  MOUTH_VERTICAL_OFFSET,
+  MULTI_TAP_WINDOW_MS,
+  POINTER_DIST_FAR_PX,
+  POINTER_DIST_NEAR_PX,
+  POINTER_SMOOTH_K,
+  POINTER_SPEED_ERRATIC,
+  POINTER_SPEED_HIGH,
+  POINTER_SPEED_LOW,
+  POINTER_STALK_SPEED_HIGH,
+  POINTER_STALK_SPEED_LOW,
+  PUPIL_BASE_RADIUS,
+  PUPIL_TRACK_REACH,
+  SACCADE_AMPLITUDE,
+  SACCADE_INTERVAL_MAX_S,
+  SACCADE_INTERVAL_MIN_S,
+  SMOOTH_K,
+  SMOOTH_K_REDUCED
+}

@@ -1,0 +1,5 @@
+export { MascotCanvas } from './mascot-canvas'
+export { Mascot, MascotBubbleFollower } from './mascot'
+export { useMascotPose } from './use-mascot-pose'
+export { useMascotChannels } from './use-mascot-channels'
+export type { ChannelName } from './constants'

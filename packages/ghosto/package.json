@@ -1,0 +1,47 @@
+{
+  "name": "ghosto",
+  "version": "0.0.2",
+  "description": "Procedural 3D mascot for React. Zero config. Full control.",
+  "keywords": [
+    "react",
+    "mascot",
+    "3d",
+    "three",
+    "react-three-fiber",
+    "ai"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/1qh/ghosto"
+  },
+  "license": "MIT",
+  "author": "1qh",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.mts",
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "prepublishOnly": "bun run build",
+    "postpublish": "bunx pm4ai@latest cleanup"
+  },
+  "dependencies": {
+    "idb-keyval": "latest",
+    "zustand": "latest"
+  },
+  "peerDependencies": {
+    "@react-three/fiber": ">=8",
+    "react": ">=19",
+    "react-dom": ">=19",
+    "three": ">=0.160"
+  }
+}
