@@ -1,5 +1,6 @@
 'use client'
 import { create } from 'zustand'
+
 interface MascotPose {
   bodyScreenPx: { x: number; y: number }
   homeWorld: { x: number; y: number; z: number }

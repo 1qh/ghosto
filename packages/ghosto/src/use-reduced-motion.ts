@@ -1,6 +1,7 @@
 /* oxlint-disable promise/prefer-await-to-callbacks */
 'use client'
 import { useSyncExternalStore } from 'react'
+
 const QUERY = '(prefers-reduced-motion: reduce)'
 const subscribe = (cb: () => void): (() => void) => {
   if (typeof globalThis.matchMedia !== 'function') return () => undefined

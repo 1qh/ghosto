@@ -6,6 +6,7 @@
 'use client'
 import { get, set } from 'idb-keyval'
 import { useEffect, useState } from 'react'
+
 interface DnaParams {
   baseHue: number
   bodyAspectRatio: number

@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef } from 'react'
 import { useMascotChannels } from './use-mascot-channels'
+
 interface KbState {
   capsLockOn: boolean
   composerFocused: boolean

@@ -3,6 +3,7 @@ import { get, set } from 'idb-keyval'
 import { useEffect, useRef } from 'react'
 import { AFFINITY_TIERS } from './constants'
 import { useMascotChannels } from './use-mascot-channels'
+
 interface AffinityRecord {
   cumulativeMs: number
   interactions: number

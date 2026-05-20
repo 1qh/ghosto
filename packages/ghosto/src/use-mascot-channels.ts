@@ -1,6 +1,7 @@
 'use client'
 import { create } from 'zustand'
 import { CHANNEL_DECAY_S, SMOOTH_K } from './constants'
+
 type ChannelName = keyof typeof CHANNEL_DECAY_S
 type Channels = Record<ChannelName, number>
 interface MascotState {

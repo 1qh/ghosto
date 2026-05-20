@@ -2,6 +2,7 @@
 import type { ReactNode } from 'react'
 import { lazy, Suspense, useEffect, useMemo, useRef } from 'react'
 import { useMascotPose } from './use-mascot-pose'
+
 const MascotCanvas = lazy(async () => {
   const m = await import('./mascot-canvas')
   return { default: m.MascotCanvas }

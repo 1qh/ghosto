@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef } from 'react'
 import { useMascotChannels } from './use-mascot-channels'
+
 const useNeedsChannel = ({ enabled = true }: { enabled?: boolean } = {}) => {
   const set = useMascotChannels(s => s.set)
   const bump = useMascotChannels(s => s.bump)

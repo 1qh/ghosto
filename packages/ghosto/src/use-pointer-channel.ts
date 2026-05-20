@@ -12,6 +12,7 @@ import {
   POINTER_STALK_SPEED_LOW
 } from './constants'
 import { useMascotChannels } from './use-mascot-channels'
+
 interface PointerState {
   insideCanvas: boolean
   lastClickT: number

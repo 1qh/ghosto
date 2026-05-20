@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+
 const useWebglContextLoss = ({ canvasRef }: { canvasRef: React.RefObject<HTMLCanvasElement | null> }) => {
   const [lost, setLost] = useState(false)
   useEffect(() => {

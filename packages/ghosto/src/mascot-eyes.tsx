@@ -18,6 +18,7 @@ import {
 import { eyeFrag, eyeVert } from './shader/eye.frag'
 import { useMascotChannels } from './use-mascot-channels'
 import { useReducedMotion } from './use-reduced-motion'
+
 const EYE_RADIUS = 0.1
 const EYE_FRONT_Z = 0.55
 const SPHERE_ARGS: [number, number, number] = [EYE_RADIUS, 32, 24]

@@ -11,6 +11,7 @@ import { bodyFrag } from './shader/body.frag'
 import { bodyVert } from './shader/body.vert'
 import { useMascotChannels } from './use-mascot-channels'
 import { useMascotPose } from './use-mascot-pose'
+
 const SPHERE_ARGS: [number, number, number] = [BODY_RADIUS, 64, 48]
 const MAX_IMPULSES = 8
 const DRAG_SPRING_K = 18
