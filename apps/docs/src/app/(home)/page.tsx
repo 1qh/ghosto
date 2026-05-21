@@ -21,10 +21,8 @@ const Page = () => {
         href='/docs'>
         Get Started
       </Link>
-      <Bubble icon={<SlidersHorizontal className='size-4' />} title='Mascot'>
-        <div className='p-2'>
-          <TweakPanel onChange={setConfig} />
-        </div>
+      <Bubble icon={<SlidersHorizontal className='size-4' />}>
+        <TweakPanel onChange={setConfig} />
       </Bubble>
     </div>
   )
