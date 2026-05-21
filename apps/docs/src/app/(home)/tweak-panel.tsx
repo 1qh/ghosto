@@ -37,6 +37,7 @@ const TweakPanel = ({ onChange }: TweakPanelProps) => {
       scleraColor: defaultConfig.colors.sclera,
       smoothK: defaultConfig.smoothing.k
     }
+    const initialState = { ...state }
     const pane = new Pane({ container: host, title: 'Mascot config' })
     const body = pane.addFolder({ title: 'Body' })
     body.addBinding(state, 'bodyRadius', { label: 'radius', max: 2, min: 0.4, step: 0.01 })
@@ -62,6 +63,10 @@ const TweakPanel = ({ onChange }: TweakPanelProps) => {
     colors.addBinding(state, 'scleraColor', { label: 'sclera' })
     colors.addBinding(state, 'mouthColor', { label: 'mouth' })
     colors.addBinding(state, 'heatColor', { label: 'heat' })
+    pane.addButton({ title: 'Reset to defaults' }).on('click', () => {
+      Object.assign(state, initialState)
+      pane.refresh()
+    })
     pane.on('change', () => {
       onChangeRef.current({
         blink: { durationS: state.blinkDurationS },
