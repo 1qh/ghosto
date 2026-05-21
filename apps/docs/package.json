@@ -10,10 +10,12 @@
   },
   "dependencies": {
     "@react-three/fiber": "latest",
+    "@tweakpane/core": "latest",
     "fumadocs-core": "latest",
     "fumadocs-mdx": "latest",
     "fumadocs-ui": "latest",
     "ghosto": "workspace:*",
+    "levitato": "latest",
     "lucide-react": "latest",
     "next": "latest",
     "react": "latest",

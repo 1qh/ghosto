@@ -4,17 +4,9 @@
 /* eslint-disable react/no-unknown-property, @eslint-react/dom/no-unknown-property, react-hooks/refs, react-hooks/immutability */
 'use client'
 import { Canvas, useThree } from '@react-three/fiber'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
-import {
-  CAMERA_FAR,
-  CAMERA_FOV_DEG,
-  CAMERA_NEAR,
-  CAMERA_Z_DEFAULT,
-  POINTER_SMOOTH_K,
-  SMOOTH_K,
-  SMOOTH_K_REDUCED
-} from './constants'
+import { useGhostoConfig } from './config'
 import { MascotBody } from './mascot-body'
 import { MascotEyes } from './mascot-eyes'
 import { SvgFallback } from './svg-fallback'
@@ -28,11 +20,6 @@ import { usePointerChannel } from './use-pointer-channel'
 import { useReducedMotion } from './use-reduced-motion'
 import { useWebglContextLoss } from './use-webgl-context-loss'
 
-const CAMERA_PROPS = {
-  fov: CAMERA_FOV_DEG,
-  near: CAMERA_NEAR,
-  position: [0, 0, CAMERA_Z_DEFAULT] as [number, number, number]
-}
 const DPR_RANGE: [number, number] = [1, 2]
 const GL_PROPS = { alpha: true, antialias: true, powerPreference: 'high-performance' as const }
 const LIGHT_POS: [number, number, number] = [1, 2, 1]
@@ -43,18 +30,19 @@ interface SceneProps {
   setMascotCenterPx: (x: number, y: number) => void
 }
 const Scene = ({ bodyCenterRef, pointer3DRef, setMascotCenterPx }: SceneProps) => {
+  const config = useGhostoConfig()
   const decay = useMascotChannels(s => s.decay)
   const tick = useMascotChannels(s => s.tick)
   const setBodyScreenPx = useMascotPose(s => s.setBodyScreenPx)
   const { camera, gl, size } = useThree()
   useEffect(() => {
     if (!(camera instanceof THREE.PerspectiveCamera)) return
-    camera.fov = CAMERA_FOV_DEG
-    camera.near = CAMERA_NEAR
-    camera.far = CAMERA_FAR
-    camera.position.set(0, 0, CAMERA_Z_DEFAULT)
+    camera.fov = config.camera.fovDeg
+    camera.near = config.camera.near
+    camera.far = config.camera.far
+    camera.position.set(0, 0, config.camera.zDefault)
     camera.updateProjectionMatrix()
-  }, [camera])
+  }, [camera, config.camera.far, config.camera.fovDeg, config.camera.near, config.camera.zDefault])
   useEffect(() => {
     gl.toneMapping = THREE.ACESFilmicToneMapping
     gl.outputColorSpace = THREE.SRGBColorSpace
@@ -114,7 +102,7 @@ const Scene = ({ bodyCenterRef, pointer3DRef, setMascotCenterPx }: SceneProps) =
       tick(dt)
       const target = pointer3DTargetRef.current
       const { current } = pointer3DRef
-      const alpha = 1 - Math.exp(-POINTER_SMOOTH_K * dt)
+      const alpha = 1 - Math.exp(-config.smoothing.pointerK * dt)
       current.x += (target.x - current.x) * alpha
       current.y += (target.y - current.y) * alpha
       current.z += (target.z - current.z) * alpha
@@ -122,7 +110,7 @@ const Scene = ({ bodyCenterRef, pointer3DRef, setMascotCenterPx }: SceneProps) =
     }
     raf = requestAnimationFrame(loop)
     return () => cancelAnimationFrame(raf)
-  }, [decay, tick, pointer3DRef])
+  }, [config.smoothing.pointerK, decay, tick, pointer3DRef])
   return (
     <>
       <ambientLight color='#ffffff' intensity={0.85} />
@@ -134,15 +122,24 @@ const Scene = ({ bodyCenterRef, pointer3DRef, setMascotCenterPx }: SceneProps) =
   )
 }
 const MascotCanvas = () => {
+  const config = useGhostoConfig()
   useMascotDna()
   const pointer3DRef = useRef(new THREE.Vector3())
   const bodyCenterRef = useRef(new THREE.Vector3())
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const reducedMotion = useReducedMotion()
   const setSmoothK = useMascotChannels(s => s.setSmoothK)
+  const cameraProps = useMemo(
+    () => ({
+      fov: config.camera.fovDeg,
+      near: config.camera.near,
+      position: [0, 0, config.camera.zDefault] as [number, number, number]
+    }),
+    [config.camera.fovDeg, config.camera.near, config.camera.zDefault]
+  )
   useEffect(() => {
-    setSmoothK(reducedMotion ? SMOOTH_K_REDUCED : SMOOTH_K)
-  }, [reducedMotion, setSmoothK])
+    setSmoothK(reducedMotion ? config.smoothing.kReduced : config.smoothing.k)
+  }, [config.smoothing.k, config.smoothing.kReduced, reducedMotion, setSmoothK])
   const { setMascotCenter } = usePointerChannel({ enabled: !reducedMotion })
   useKeyboardChannel({ enabled: true })
   useNeedsChannel({ enabled: true })
@@ -168,7 +165,7 @@ const MascotCanvas = () => {
   return (
     <div className='pointer-events-none relative size-full [&_canvas]:pointer-events-none [&>div]:pointer-events-none'>
       <Canvas
-        camera={CAMERA_PROPS}
+        camera={cameraProps}
         dpr={DPR_RANGE}
         gl={GL_PROPS}
         onCreated={({ gl }) => {

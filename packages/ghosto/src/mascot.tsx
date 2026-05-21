@@ -1,6 +1,8 @@
 'use client'
 import type { ReactNode } from 'react'
 import { lazy, Suspense, useEffect, useMemo, useRef } from 'react'
+import type { DeepPartial, GhostoConfig } from './config'
+import { defaultConfig, GhostoConfigContext, mergeConfig, setActiveConfig, useGhostoConfig } from './config'
 import { useMascotPose } from './use-mascot-pose'
 
 const MascotCanvas = lazy(async () => {
@@ -20,6 +22,7 @@ const MascotBubbleFollower = ({ children, offsetY = -110 }: { children: ReactNod
   )
 }
 const MascotOverlay = ({ anchorRef }: { anchorRef: React.RefObject<HTMLDivElement | null> }) => {
+  const { camera } = useGhostoConfig()
   const setHomeWorld = useMascotPose(s => s.setHomeWorld)
   const overlayRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -43,8 +46,8 @@ const MascotOverlay = ({ anchorRef }: { anchorRef: React.RefObject<HTMLDivElemen
       const cy = rect.top + rect.height / 2
       const vw = globalThis.innerWidth
       const vh = globalThis.innerHeight
-      const fov = (28 * Math.PI) / 180
-      const pxToWorld = (2 * 12 * Math.tan(fov / 2)) / vh
+      const fov = (camera.fovDeg * Math.PI) / 180
+      const pxToWorld = (2 * camera.zDefault * Math.tan(fov / 2)) / vh
       const worldX = (cx - vw / 2) * pxToWorld
       const worldY = -(cy - vh / 2) * pxToWorld
       setHomeWorld(worldX, worldY, 0)
@@ -60,7 +63,7 @@ const MascotOverlay = ({ anchorRef }: { anchorRef: React.RefObject<HTMLDivElemen
       globalThis.removeEventListener('scroll', update)
       globalThis.removeEventListener('resize', update)
     }
-  }, [anchorRef, setHomeWorld])
+  }, [anchorRef, camera.fovDeg, camera.zDefault, setHomeWorld])
   return (
     <div className='pointer-events-none fixed inset-0 z-10' ref={overlayRef}>
       <Suspense fallback={null}>
@@ -69,15 +72,27 @@ const MascotOverlay = ({ anchorRef }: { anchorRef: React.RefObject<HTMLDivElemen
     </div>
   )
 }
-const Mascot = ({ bubble, size = 240 }: { bubble?: ReactNode; size?: number }) => {
+const Mascot = ({
+  bubble,
+  config,
+  size = 240
+}: {
+  bubble?: ReactNode
+  config?: DeepPartial<GhostoConfig>
+  size?: number
+}) => {
   const anchorRef = useRef<HTMLDivElement>(null)
   const style = useMemo(() => ({ height: size, width: size }), [size])
+  const merged = useMemo(() => mergeConfig(defaultConfig, config), [config])
+  useEffect(() => {
+    setActiveConfig(merged)
+  }, [merged])
   return (
-    <>
+    <GhostoConfigContext value={merged}>
       <div ref={anchorRef} style={style} />
       <MascotOverlay anchorRef={anchorRef} />
       {bubble === undefined ? null : <MascotBubbleFollower>{bubble}</MascotBubbleFollower>}
-    </>
+    </GhostoConfigContext>
   )
 }
 export { Mascot, MascotBubbleFollower }

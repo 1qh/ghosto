@@ -1,4 +1,5 @@
-export type { ChannelName } from './constants'
+export type { ChannelName, DeepPartial, GhostoConfig } from './config'
+export { defaultConfig } from './config'
 export { Mascot, MascotBubbleFollower } from './mascot'
 export { MascotCanvas } from './mascot-canvas'
 export { useMascotChannels } from './use-mascot-channels'

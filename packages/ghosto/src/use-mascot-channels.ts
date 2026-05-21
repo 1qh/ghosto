@@ -1,8 +1,8 @@
 'use client'
 import { create } from 'zustand'
-import { CHANNEL_DECAY_S, SMOOTH_K } from './constants'
+import type { ChannelName } from './config'
+import { getActiveConfig } from './config'
 
-type ChannelName = keyof typeof CHANNEL_DECAY_S
 type Channels = Record<ChannelName, number>
 interface MascotState {
   bump: (name: ChannelName, delta: number, cap?: number) => void
@@ -34,7 +34,7 @@ const ZERO: Channels = {
   worry: 0
 }
 const smoothedState: Channels = { ...ZERO }
-let smoothK = SMOOTH_K
+let smoothK = getActiveConfig().smoothing.k
 const clamp01 = (x: number): number => Math.max(0, Math.min(1, x))
 const useMascotChannels = create<MascotState>((setState, getState) => ({
   bump: (name, delta, cap = 1) => {
@@ -42,9 +42,10 @@ const useMascotChannels = create<MascotState>((setState, getState) => ({
   },
   channels: { ...ZERO },
   decay: dt => {
+    const { decayS } = getActiveConfig().channels
     const next: Channels = { ...getState().channels }
     for (const key of Object.keys(next) as ChannelName[]) {
-      const tau = CHANNEL_DECAY_S[key]
+      const tau = decayS[key]
       if (Number.isFinite(tau) && tau >= 0.01) next[key] *= Math.exp(-dt / tau)
     }
     setState({ channels: next })
@@ -64,5 +65,5 @@ const useMascotChannels = create<MascotState>((setState, getState) => ({
       smoothedState[key] += (current[key] - smoothedState[key]) * alpha
   }
 }))
-export type { ChannelName, Channels }
+export type { Channels }
 export { useMascotChannels }

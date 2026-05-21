@@ -1,5 +1,6 @@
 'use client'
 import { create } from 'zustand'
+import { getActiveConfig } from './config'
 
 interface MascotPose {
   bodyScreenPx: { x: number; y: number }
@@ -9,7 +10,11 @@ interface MascotPose {
 }
 const useMascotPose = create<MascotPose>(setState => ({
   bodyScreenPx: { x: 0, y: 0 },
-  homeWorld: { x: 0, y: 0.1, z: 0 },
+  homeWorld: {
+    x: getActiveConfig().body.homePos[0],
+    y: getActiveConfig().body.homePos[1],
+    z: getActiveConfig().body.homePos[2]
+  },
   setBodyScreenPx: (x, y) => {
     setState(s => (s.bodyScreenPx.x === x && s.bodyScreenPx.y === y ? s : { bodyScreenPx: { x, y } }))
   },

@@ -1,16 +1,6 @@
 'use client'
 import { useCallback, useEffect, useRef } from 'react'
-import {
-  DRAG_THRESHOLD_PX,
-  MULTI_TAP_WINDOW_MS,
-  POINTER_DIST_FAR_PX,
-  POINTER_DIST_NEAR_PX,
-  POINTER_SPEED_ERRATIC,
-  POINTER_SPEED_HIGH,
-  POINTER_SPEED_LOW,
-  POINTER_STALK_SPEED_HIGH,
-  POINTER_STALK_SPEED_LOW
-} from './constants'
+import { useGhostoConfig } from './config'
 import { useMascotChannels } from './use-mascot-channels'
 
 interface PointerState {
@@ -30,6 +20,7 @@ const smoothstep = (a: number, b: number, x: number): number => {
   return t * t * (3 - 2 * t)
 }
 const usePointerChannel = ({ enabled = true }: { enabled?: boolean } = {}) => {
+  const { pointer, drag, tap } = useGhostoConfig()
   const bump = useMascotChannels(s => s.bump)
   const setCh = useMascotChannels(s => s.set)
   const stateRef = useRef<PointerState>({
@@ -71,7 +62,7 @@ const usePointerChannel = ({ enabled = true }: { enabled?: boolean } = {}) => {
       st.lastT = t
       st.lastMoveT = t
       const dist = Math.hypot(e.clientX - st.mascotCenterPx.x, e.clientY - st.mascotCenterPx.y)
-      const closeness = 1 - smoothstep(POINTER_DIST_NEAR_PX, POINTER_DIST_FAR_PX, dist)
+      const closeness = 1 - smoothstep(pointer.distNearPx, pointer.distFarPx, dist)
       setCh('magnetism', closeness)
       if (jumpPx >= 600 && st.lastMoveT - st.lastT < 100) {
         bump('attention', 0.6, 1)
@@ -85,18 +76,18 @@ const usePointerChannel = ({ enabled = true }: { enabled?: boolean } = {}) => {
         bump('affection', 0.02, 1)
         bump('attention', 0.12, 1)
         bump('magnetism', 0.06, 1)
-      } else if (speed >= POINTER_SPEED_ERRATIC) {
+      } else if (speed >= pointer.speedErratic) {
         bump('worry', 0.08, 1)
         bump('dizzy', 0.05, 1)
         bump('attention', 0.1, 1)
-      } else if (speed >= POINTER_SPEED_HIGH) {
+      } else if (speed >= pointer.speedHigh) {
         bump('excitement', 0.05, 1)
         bump('attention', 0.06, 1)
-      } else if (speed >= POINTER_STALK_SPEED_LOW && speed <= POINTER_STALK_SPEED_HIGH && closeness > 0.5) {
+      } else if (speed >= pointer.stalkSpeedLow && speed <= pointer.stalkSpeedHigh && closeness > 0.5) {
         bump('attention', 0.06, 1)
         bump('magnetism', 0.04, 1)
         bump('joy', 0.02, 1)
-      } else if (speed <= POINTER_SPEED_LOW && closeness > 0.4) {
+      } else if (speed <= pointer.speedLow && closeness > 0.4) {
         bump('joy', 0.03, 1)
         bump('cheer', 0.02, 1)
         bump('affection', 0.01, 1)
@@ -113,7 +104,7 @@ const usePointerChannel = ({ enabled = true }: { enabled?: boolean } = {}) => {
         st.pressActive = false
         return
       }
-      const wasDrag = st.movePx > DRAG_THRESHOLD_PX
+      const wasDrag = st.movePx > drag.thresholdPx
       if (wasDrag) {
         bump('cheer', 0.4, 1)
         bump('joy', 0.3, 1)
@@ -122,7 +113,7 @@ const usePointerChannel = ({ enabled = true }: { enabled?: boolean } = {}) => {
         const streakDt = e.timeStamp - st.lastClickT
         const inStreak = streakDt < 1000
         const streakMult = inStreak ? Math.min(1.6, 1 + 0.2 * Math.max(0, 5 - streakDt / 200)) : 1
-        const dbl = streakDt < MULTI_TAP_WINDOW_MS
+        const dbl = streakDt < tap.multiTapWindowMs
         bump('joy', (dbl ? 0.9 : 0.7) * streakMult, 1)
         bump('cheer', (dbl ? 0.7 : 0.5) * streakMult, 1)
         bump('excitement', (dbl ? 0.6 : 0.4) * streakMult, 1)
@@ -147,7 +138,20 @@ const usePointerChannel = ({ enabled = true }: { enabled?: boolean } = {}) => {
       globalThis.removeEventListener('pointerup', onUp)
       globalThis.removeEventListener('pointercancel', onUp)
     }
-  }, [bump, enabled, setCh])
+  }, [
+    bump,
+    drag.thresholdPx,
+    enabled,
+    pointer.distFarPx,
+    pointer.distNearPx,
+    pointer.speedErratic,
+    pointer.speedHigh,
+    pointer.speedLow,
+    pointer.stalkSpeedHigh,
+    pointer.stalkSpeedLow,
+    setCh,
+    tap.multiTapWindowMs
+  ])
   const setMascotCenter = useCallback((x: number, y: number) => {
     stateRef.current.mascotCenterPx = { x, y }
   }, [])

@@ -6,13 +6,12 @@
 import { useFrame } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
-import { BODY_BASE_SCALE, BODY_BREATHE_HZ, BODY_RADIUS, COLOR_BODY, COLOR_HEAT } from './constants'
+import { useGhostoConfig } from './config'
 import { bodyFrag } from './shader/body.frag'
 import { bodyVert } from './shader/body.vert'
 import { useMascotChannels } from './use-mascot-channels'
 import { useMascotPose } from './use-mascot-pose'
 
-const SPHERE_ARGS: [number, number, number] = [BODY_RADIUS, 64, 48]
 const MAX_IMPULSES = 8
 const DRAG_SPRING_K = 18
 const RELEASE_SPRING_K = 6
@@ -24,14 +23,16 @@ interface BodyProps {
   pointer3D: THREE.Vector3
 }
 const MascotBody = ({ baseHue = 0, onCenter, pointer3D }: BodyProps) => {
+  const { body, colors } = useGhostoConfig()
   const meshRef = useRef<THREE.Mesh>(null)
   const getSmoothed = useMascotChannels(s => s.smoothed)
+  const sphereArgs = useMemo((): [number, number, number] => [body.radius, 64, 48], [body.radius])
   const uniforms = useMemo(
     () => ({
-      uBaseColor: { value: new THREE.Color(COLOR_BODY) },
+      uBaseColor: { value: new THREE.Color(colors.body) },
       uBreathePhase: { value: 0 },
       uCameraPos: { value: new THREE.Vector3() },
-      uCoreColor: { value: new THREE.Color(COLOR_HEAT) },
+      uCoreColor: { value: new THREE.Color(colors.heat) },
       uDiscoveryAura: { value: 0 },
       uExcitement: { value: 0 },
       uHeat: { value: 0 },
@@ -41,7 +42,7 @@ const MascotBody = ({ baseHue = 0, onCenter, pointer3D }: BodyProps) => {
       uPointer3D: { value: new THREE.Vector3() },
       uTime: { value: 0 }
     }),
-    []
+    [colors.body, colors.heat]
   )
   const tmpVRef = useRef(new THREE.Vector3())
   const bounceRef = useRef({ end: 0, lastExc: 0 })
@@ -74,11 +75,11 @@ const MascotBody = ({ baseHue = 0, onCenter, pointer3D }: BodyProps) => {
     uniforms.uExcitement.value = c.excitement
     uniforms.uHeat.value = c.heat
     uniforms.uJoy.value = c.joy
-    uniforms.uBreathePhase.value = t * BODY_BREATHE_HZ * Math.PI * 2
+    uniforms.uBreathePhase.value = t * body.breatheHz * Math.PI * 2
     uniforms.uPointer3D.value.copy(pointer3D)
     state.camera.getWorldPosition(uniforms.uCameraPos.value)
     if (baseHue !== 0) {
-      const baseCol = new THREE.Color(COLOR_BODY)
+      const baseCol = new THREE.Color(colors.body)
       baseCol.offsetHSL(baseHue / 360, 0, 0)
       uniforms.uBaseColor.value.copy(baseCol)
     }
@@ -109,7 +110,7 @@ const MascotBody = ({ baseHue = 0, onCenter, pointer3D }: BodyProps) => {
     const squash = Math.min(SQUASH_MAX, speed * SQUASH_GAIN)
     const angle = Math.atan2(velRef.current.y, velRef.current.x)
     mesh.rotation.set(0, 0, angle)
-    const breathe = Math.sin(t * BODY_BREATHE_HZ * Math.PI * 2) * 0.006
+    const breathe = Math.sin(t * body.breatheHz * Math.PI * 2) * 0.006
     const bounce = bounceRef.current
     if (c.excitement - bounce.lastExc > 0.2) bounce.end = t + 0.22
     bounce.lastExc = c.excitement
@@ -118,7 +119,7 @@ const MascotBody = ({ baseHue = 0, onCenter, pointer3D }: BodyProps) => {
       const phase = (bounce.end - t) / 0.22
       bounceAmp = Math.sin((1 - phase) * Math.PI) * 0.12
     }
-    const baseScale = BODY_BASE_SCALE + c.joy * 0.04 - c.fatigue * 0.02 + breathe + bounceAmp
+    const baseScale = body.baseScale + c.joy * 0.04 - c.fatigue * 0.02 + breathe + bounceAmp
     const sxStretch = 1 + squash
     const syStretch = 1 - squash * 0.6
     mesh.scale.set(baseScale * sxStretch, baseScale * syStretch, baseScale * (1 - squash * 0.3))
@@ -127,7 +128,7 @@ const MascotBody = ({ baseHue = 0, onCenter, pointer3D }: BodyProps) => {
   })
   return (
     <mesh ref={meshRef}>
-      <sphereGeometry args={SPHERE_ARGS} />
+      <sphereGeometry args={sphereArgs} />
       <shaderMaterial fragmentShader={bodyFrag} uniforms={uniforms} vertexShader={bodyVert} />
     </mesh>
   )

@@ -1,7 +1,8 @@
 'use client'
 import { get, set } from 'idb-keyval'
-import { useEffect, useRef } from 'react'
-import { AFFINITY_TIERS } from './constants'
+import { useCallback, useEffect, useRef } from 'react'
+import type { AffinityTier } from './config'
+import { defaultConfig, useGhostoConfig } from './config'
 import { useMascotChannels } from './use-mascot-channels'
 
 interface AffinityRecord {
@@ -10,12 +11,17 @@ interface AffinityRecord {
   lastSeenAt: number
 }
 const KEY = 'va.mascot.v1.affinity.self'
-const tierFor = (interactions: number): (typeof AFFINITY_TIERS)[number] => {
-  let chosen: (typeof AFFINITY_TIERS)[number] = AFFINITY_TIERS[0]
-  for (const t of AFFINITY_TIERS) if (interactions >= t.interactions) chosen = t
+const FALLBACK_TIER: AffinityTier = { interactions: 0, label: 'shy' }
+const tierFor = (
+  interactions: number,
+  tiers: readonly AffinityTier[] = defaultConfig.channels.affinityTiers
+): AffinityTier => {
+  let chosen: AffinityTier = tiers[0] ?? FALLBACK_TIER
+  for (const t of tiers) if (interactions >= t.interactions) chosen = t
   return chosen
 }
 const useHistoryChannel = ({ enabled = true }: { enabled?: boolean } = {}) => {
+  const { channels } = useGhostoConfig()
   const setCh = useMascotChannels(s => s.set)
   const recordRef = useRef<AffinityRecord | null>(null)
   useEffect(() => {
@@ -54,7 +60,11 @@ const useHistoryChannel = ({ enabled = true }: { enabled?: boolean } = {}) => {
       flush()
     }
   }, [enabled, setCh])
-  return { recordRef, tierFor }
+  const boundTierFor = useCallback(
+    (interactions: number): AffinityTier => tierFor(interactions, channels.affinityTiers),
+    [channels.affinityTiers]
+  )
+  return { recordRef, tierFor: boundTierFor }
 }
 export type { AffinityRecord }
 export { tierFor, useHistoryChannel }

@@ -6,15 +6,7 @@
 import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
-import {
-  BLINK_DURATION_S,
-  BLINK_INTERVAL_MAX_S,
-  BLINK_INTERVAL_MIN_S,
-  EYE_FOLLOW_K,
-  EYE_FOLLOW_K_REDUCED,
-  EYE_HALF_SPACING,
-  EYE_VERTICAL_OFFSET
-} from './constants'
+import { useGhostoConfig } from './config'
 import { eyeFrag, eyeVert } from './shader/eye.frag'
 import { useMascotChannels } from './use-mascot-channels'
 import { useReducedMotion } from './use-reduced-motion'
@@ -41,10 +33,11 @@ const SingleEye = ({
   pointer3D: THREE.Vector3
   side: -1 | 1
 }) => {
+  const { blink: blinkCfg, eyes } = useGhostoConfig()
   const meshRef = useRef<THREE.Mesh>(null)
   const getSmoothed = useMascotChannels(s => s.smoothed)
   const reducedMotion = useReducedMotion()
-  const followK = reducedMotion ? EYE_FOLLOW_K_REDUCED : EYE_FOLLOW_K
+  const followK = reducedMotion ? eyes.followKReduced : eyes.followK
   const uniforms = useMemo(
     () => ({
       uBlink: { value: 0 },
@@ -88,8 +81,8 @@ const SingleEye = ({
     }
     const matUniforms = (mesh.material as THREE.ShaderMaterial).uniforms as unknown as EyeUniforms
     state.camera.getWorldPosition(matUniforms.uCameraPos.value)
-    const anchorX = bodyCenter.x + side * EYE_HALF_SPACING
-    const anchorY = bodyCenter.y + EYE_VERTICAL_OFFSET
+    const anchorX = bodyCenter.x + side * eyes.halfSpacing
+    const anchorY = bodyCenter.y + eyes.verticalOffset
     const anchorZ = bodyCenter.z + EYE_FRONT_Z
     const c = getSmoothed()
     const now = state.clock.elapsedTime
@@ -115,13 +108,13 @@ const SingleEye = ({
     const sad = clamp(c.loneliness * 0.8 + c.worry * 0.4 - c.joy, 0, 1)
     const blink = blinkRef.current
     if (blink.nextAt === 0)
-      blink.nextAt = now + BLINK_INTERVAL_MIN_S + Math.random() * (BLINK_INTERVAL_MAX_S - BLINK_INTERVAL_MIN_S)
+      blink.nextAt = now + blinkCfg.intervalMinS + Math.random() * (blinkCfg.intervalMaxS - blinkCfg.intervalMinS)
     if (now > blink.nextAt && now > blink.end + blink.delay) {
-      blink.end = now + BLINK_DURATION_S + blink.delay
-      blink.nextAt = now + BLINK_INTERVAL_MIN_S + Math.random() * (BLINK_INTERVAL_MAX_S - BLINK_INTERVAL_MIN_S)
+      blink.end = now + blinkCfg.durationS + blink.delay
+      blink.nextAt = now + blinkCfg.intervalMinS + Math.random() * (blinkCfg.intervalMaxS - blinkCfg.intervalMinS)
     }
     const blinkActive = now > blink.delay && now < blink.end
-    const targetBlink = blinkActive ? Math.sin(((blink.end - now) / BLINK_DURATION_S) * Math.PI) : 0
+    const targetBlink = blinkActive ? Math.sin(((blink.end - now) / blinkCfg.durationS) * Math.PI) : 0
     const ks = 90
     const ds = 14
     const force = ks * (targetBlink - blink.spring) - ds * blink.springV
