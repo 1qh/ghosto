@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
+@source '../../../../node_modules/levitato/dist/**/*';
 @theme inline {
   --color-foreground: var(--color-fd-foreground);
   --color-background: var(--color-fd-background);
