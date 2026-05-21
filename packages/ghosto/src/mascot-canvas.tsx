@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/nursery/noUnknownAttribute: R3F intrinsics */
 /** biome-ignore-all lint/performance/noNamespaceImport: three convention */
-/* oxlint-disable react/no-unknown-property, import/no-namespace */
+/* oxlint-disable import/no-namespace */
 /* eslint-disable react/no-unknown-property, @eslint-react/dom/no-unknown-property, react-hooks/refs, react-hooks/immutability */
 'use client'
 import { Canvas, useThree } from '@react-three/fiber'

@@ -1,4 +1,4 @@
-/* oxlint-disable no-bitwise, no-param-reassign, unicorn/number-literal-case */
+/* oxlint-disable unicorn/number-literal-case */
 /** biome-ignore-all lint/suspicious/noAssignInExpressions: mulberry32 PRNG step */
 /** biome-ignore-all lint/style/noParameterAssign: mulberry32 advances local copy */
 /** biome-ignore-all lint/suspicious/noBitwiseOperators: mulberry32 requires xor/shift */
