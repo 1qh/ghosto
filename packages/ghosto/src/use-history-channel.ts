@@ -1,8 +1,8 @@
 'use client'
-import { get, set } from 'idb-keyval'
 import { useCallback, useEffect, useRef } from 'react'
 import type { AffinityTier } from './config'
 import { defaultConfig, useGhostoConfig } from './config'
+import { get, set } from './idb'
 import { useMascotChannels } from './use-mascot-channels'
 
 interface AffinityRecord {

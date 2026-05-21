@@ -20,6 +20,9 @@
   "simple-git-hooks": {
     "pre-commit": "sh up.sh && git add -u"
   },
+  "dependencies": {
+    "idb-keyval": "^6.2.3"
+  },
   "devDependencies": {
     "@happy-dom/global-registrator": "latest",
     "@playwright/test": "latest",

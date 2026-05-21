@@ -4,8 +4,8 @@
 /** biome-ignore-all lint/suspicious/noBitwiseOperators: mulberry32 requires xor/shift */
 /* eslint-disable no-bitwise, no-param-reassign */
 'use client'
-import { get, set } from 'idb-keyval'
 import { useEffect, useState } from 'react'
+import { get, set } from './idb'
 
 interface DnaParams {
   baseHue: number
