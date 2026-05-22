@@ -21,7 +21,7 @@
     "pre-commit": "sh up.sh && git add -u"
   },
   "dependencies": {
-    "idb-keyval": "^6.2.3"
+    "idb-keyval": "latest"
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "latest",
