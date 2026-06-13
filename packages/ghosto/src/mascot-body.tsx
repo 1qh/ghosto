@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/nursery/noUnknownAttribute: R3F intrinsics */
 /** biome-ignore-all lint/performance/noNamespaceImport: three convention */
 /* oxlint-disable import/no-namespace */
 /* eslint-disable react/no-unknown-property, @eslint-react/dom/no-unknown-property, react-hooks/immutability */
@@ -128,7 +127,9 @@ const MascotBody = ({ baseHue = 0, onCenter, pointer3D }: BodyProps) => {
   })
   return (
     <mesh ref={meshRef}>
+      {/* biome-ignore lint/suspicious/noUnknownAttribute: react-three-fiber three.js geometry props */}
       <sphereGeometry args={sphereArgs} />
+      {/* biome-ignore lint/suspicious/noUnknownAttribute: react-three-fiber three.js material props */}
       <shaderMaterial fragmentShader={bodyFrag} uniforms={uniforms} vertexShader={bodyVert} />
     </mesh>
   )

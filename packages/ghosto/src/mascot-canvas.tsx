@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/nursery/noUnknownAttribute: R3F intrinsics */
 /** biome-ignore-all lint/performance/noNamespaceImport: three convention */
 /* oxlint-disable import/no-namespace */
 /* eslint-disable react/no-unknown-property, @eslint-react/dom/no-unknown-property, react-hooks/refs, react-hooks/immutability */
@@ -113,8 +112,11 @@ const Scene = ({ bodyCenterRef, pointer3DRef, setMascotCenterPx }: SceneProps) =
   }, [config.smoothing.pointerK, decay, tick, pointer3DRef])
   return (
     <>
+      {/* biome-ignore lint/suspicious/noUnknownAttribute: react-three-fiber three.js light props */}
       <ambientLight color='#ffffff' intensity={0.85} />
+      {/* biome-ignore lint/suspicious/noUnknownAttribute: react-three-fiber three.js light props */}
       <directionalLight color='#ffffff' intensity={1.2} position={LIGHT_POS} />
+      {/* biome-ignore lint/suspicious/noUnknownAttribute: react-three-fiber three.js light props */}
       <pointLight color='#ffffff' intensity={0.6} position={POINT_LIGHT_POS} />
       <MascotBody onCenter={onCenter} pointer3D={pointer3DRef.current} />
       <MascotEyes bodyCenter={bodyCenterRef.current} pointer3D={pointer3DRef.current} />

@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/nursery/noUnknownAttribute: R3F intrinsics */
 /** biome-ignore-all lint/performance/noNamespaceImport: three convention */
 /* oxlint-disable import/no-namespace */
 /* eslint-disable react/no-unknown-property, @eslint-react/dom/no-unknown-property */
@@ -131,7 +130,9 @@ const SingleEye = ({
   })
   return (
     <mesh ref={meshRef}>
+      {/* biome-ignore lint/suspicious/noUnknownAttribute: react-three-fiber three.js geometry props */}
       <sphereGeometry args={SPHERE_ARGS} />
+      {/* biome-ignore lint/suspicious/noUnknownAttribute: react-three-fiber three.js material props */}
       <shaderMaterial depthTest={false} fragmentShader={eyeFrag} uniforms={uniforms} vertexShader={eyeVert} />
     </mesh>
   )
