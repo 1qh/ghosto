@@ -1,5 +1,5 @@
 /** biome-ignore-all lint/performance/noNamespaceImport: three convention */
-/* oxlint-disable import/no-namespace, react/react-compiler */
+/* oxlint-disable import/no-namespace */
 /* eslint-disable react/no-unknown-property, @eslint-react/dom/no-unknown-property, react-hooks/refs, react-hooks/immutability */
 'use client'
 import { Canvas, useThree } from '@react-three/fiber'
