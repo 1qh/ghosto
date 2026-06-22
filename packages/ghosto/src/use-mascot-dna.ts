@@ -53,7 +53,7 @@ const useMascotDna = () => {
       const url = new URL(globalThis.location.href)
       const seedOverride = url.searchParams.get('seed')
       if (seedOverride !== null) {
-        const seed = Number.parseInt(seedOverride, 10)
+        const seed = Math.trunc(Number(seedOverride))
         if (!cancelled) setDna({ createdAt: Date.now(), params: paramsFromSeed(seed), seed })
         return
       }
