@@ -243,6 +243,7 @@ const mergeInto = <T>(base: T, override: DeepPartial<T> | undefined): T => {
 }
 const mergeConfig = (base: GhostoConfig, override?: DeepPartial<GhostoConfig>): GhostoConfig => mergeInto(base, override)
 const GhostoConfigContext = createContext<GhostoConfig>(defaultConfig)
+GhostoConfigContext.displayName = 'GhostoConfigContext'
 const useGhostoConfig = (): GhostoConfig => use(GhostoConfigContext)
 let activeConfig: GhostoConfig = defaultConfig
 const getActiveConfig = (): GhostoConfig => activeConfig

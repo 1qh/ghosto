@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/performance/noNamespaceImport: three convention */
 /* oxlint-disable import/no-namespace */
-/* eslint-disable react/no-unknown-property, @eslint-react/dom/no-unknown-property, react-hooks/immutability */
+/* eslint-disable react/no-unknown-property, @eslint-react/dom-no-unknown-property, react-hooks/immutability, @eslint-react/immutability */
 'use client'
 import { useFrame } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
