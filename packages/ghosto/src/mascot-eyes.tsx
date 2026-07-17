@@ -107,9 +107,11 @@ const SingleEye = ({
     const sad = clamp(c.loneliness * 0.8 + c.worry * 0.4 - c.joy, 0, 1)
     const blink = blinkRef.current
     if (blink.nextAt === 0)
+      // eslint-disable-next-line sonarjs/pseudo-random -- non-security blink-timing jitter for a decorative mascot animation
       blink.nextAt = now + blinkCfg.intervalMinS + Math.random() * (blinkCfg.intervalMaxS - blinkCfg.intervalMinS)
     if (now > blink.nextAt && now > blink.end + blink.delay) {
       blink.end = now + blinkCfg.durationS + blink.delay
+      // eslint-disable-next-line sonarjs/pseudo-random -- non-security blink-timing jitter for a decorative mascot animation
       blink.nextAt = now + blinkCfg.intervalMinS + Math.random() * (blinkCfg.intervalMaxS - blinkCfg.intervalMinS)
     }
     const blinkActive = now > blink.delay && now < blink.end

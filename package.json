@@ -1,5 +1,6 @@
 {
   "private": true,
+  "description": "ghosto monorepo — animated mascot React component with generative DNA and docs site",
   "type": "module",
   "workspaces": [
     "apps/*",
@@ -32,7 +33,7 @@
     "@testing-library/react": "latest",
     "@turbo/gen": "latest",
     "@types/three": "latest",
-    "lintmax": "latest",
+    "lintmax": "^0.1.82",
     "playwright-core": "latest",
     "react": "latest",
     "react-dom": "latest",

@@ -1,5 +1,4 @@
 /* oxlint-disable unicorn/number-literal-case */
-/** biome-ignore-all lint/suspicious/noAssignInExpressions: mulberry32 PRNG step */
 /** biome-ignore-all lint/style/noParameterAssign: mulberry32 advances local copy */
 /** biome-ignore-all lint/suspicious/noBitwiseOperators: mulberry32 requires xor/shift */
 /* eslint-disable no-bitwise, no-param-reassign */
@@ -22,7 +21,8 @@ interface DnaRecord {
   seed: number
 }
 const mulberry32 = (a: number) => () => {
-  let t = Math.trunc((a += 0x6d_2b_79_f5))
+  a += 0x6d_2b_79_f5
+  let t = Math.trunc(a)
   t = Math.imul(t ^ (t >>> 15), t | 1)
   t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
   return Math.trunc(t ^ (t >>> 14)) / 4_294_967_296
