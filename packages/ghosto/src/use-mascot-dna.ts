@@ -1,6 +1,4 @@
 /* oxlint-disable unicorn/number-literal-case */
-/** biome-ignore-all lint/style/noParameterAssign: mulberry32 advances local copy */
-/** biome-ignore-all lint/suspicious/noBitwiseOperators: mulberry32 requires xor/shift */
 /* eslint-disable no-bitwise, no-param-reassign */
 'use client'
 import { useEffect, useState } from 'react'
