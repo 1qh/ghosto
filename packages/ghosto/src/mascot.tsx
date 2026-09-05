@@ -30,7 +30,7 @@ const MascotOverlay = ({ anchorRef }: { anchorRef: React.RefObject<HTMLDivElemen
     if (!root) return
     const apply = () => {
       const all = root.querySelectorAll('*')
-      for (const el of all) (el as HTMLElement).style.pointerEvents = 'none'
+      for (const el of all) if (el instanceof HTMLElement) el.style.pointerEvents = 'none'
     }
     apply()
     const mo = new MutationObserver(apply)

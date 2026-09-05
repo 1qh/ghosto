@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/nursery/noUndeclaredClasses: next/font injects generated CSS-variable class names the analyzer cannot resolve against the tailwind source */
 import type { Metadata } from 'next'
 import { cn } from '@a/ui'
 import { mono, sans } from './fonts'

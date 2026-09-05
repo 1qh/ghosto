@@ -44,6 +44,7 @@ const useMascotChannels = create<MascotState>((setState, getState) => ({
   decay: dt => {
     const { decayS } = getActiveConfig().channels
     const next: Channels = { ...getState().channels }
+    // biome-ignore lint/nursery/noUnsafeTypeAssertion: Object.keys widens to string[]; the keys are ChannelName by the Channels record's own type
     for (const key of Object.keys(next) as ChannelName[]) {
       const tau = decayS[key]
       if (Number.isFinite(tau) && tau >= 0.01) next[key] *= Math.exp(-dt / tau)
@@ -61,6 +62,7 @@ const useMascotChannels = create<MascotState>((setState, getState) => ({
   tick: dt => {
     const current = getState().channels
     const alpha = 1 - Math.exp(-smoothK * dt)
+    // biome-ignore lint/nursery/noUnsafeTypeAssertion: Object.keys widens to string[]; the keys are ChannelName by the Channels record's own type
     for (const key of Object.keys(current) as ChannelName[])
       smoothedState[key] += (current[key] - smoothedState[key]) * alpha
   }

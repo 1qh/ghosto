@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/performance/noNamespaceImport: three.js is consumed as a namespace (THREE.*) by convention */
 /* oxlint-disable import/no-namespace */
 /* eslint-disable react/no-unknown-property, @eslint-react/dom-no-unknown-property, react-hooks/immutability, @eslint-react/immutability */
 'use client'
@@ -42,7 +43,7 @@ const MascotBody = ({ baseHue = 0, onCenter, pointer3D }: BodyProps) => {
     }),
     [colors.body, colors.heat]
   )
-  const tmpVRef = useRef(new THREE.Vector3())
+  const tmpVecRef = useRef(new THREE.Vector3())
   const bounceRef = useRef({ end: 0, lastExc: 0 })
   const dragRef = useRef({ active: false })
   const velRef = useRef({ x: 0, y: 0 })
@@ -121,8 +122,8 @@ const MascotBody = ({ baseHue = 0, onCenter, pointer3D }: BodyProps) => {
     const sxStretch = 1 + squash
     const syStretch = 1 - squash * 0.6
     mesh.scale.set(baseScale * sxStretch, baseScale * syStretch, baseScale * (1 - squash * 0.3))
-    mesh.getWorldPosition(tmpVRef.current)
-    onCenter?.(tmpVRef.current)
+    mesh.getWorldPosition(tmpVecRef.current)
+    onCenter?.(tmpVecRef.current)
   })
   return (
     <mesh ref={meshRef}>

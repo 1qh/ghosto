@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/nursery/noUnsafeTypeAssertion: the generic recursive merge erases T to an indexable record at each boundary — every assertion re-narrows a value already proven an object by isObject back to the generic config shape */
 'use client'
 import { createContext, use } from 'react'
 

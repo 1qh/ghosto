@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/performance/noNamespaceImport: three.js is consumed as a namespace (THREE.*) by convention */
 /* oxlint-disable import/no-namespace */
 /* eslint-disable react/no-unknown-property, @eslint-react/dom-no-unknown-property, react-hooks/refs, react-hooks/immutability, @eslint-react/immutability, @eslint-react/refs */
 'use client'
@@ -24,10 +25,10 @@ const LIGHT_POS: [number, number, number] = [1, 2, 1]
 const POINT_LIGHT_POS: [number, number, number] = [2, 3, 4]
 interface SceneProps {
   bodyCenterRef: React.RefObject<THREE.Vector3>
-  pointer3DRef: React.RefObject<THREE.Vector3>
+  pointer3dRef: React.RefObject<THREE.Vector3>
   setMascotCenterPx: (x: number, y: number) => void
 }
-const Scene = ({ bodyCenterRef, pointer3DRef, setMascotCenterPx }: SceneProps) => {
+const Scene = ({ bodyCenterRef, pointer3dRef, setMascotCenterPx }: SceneProps) => {
   const config = useGhostoConfig()
   const decay = useMascotChannels(s => s.decay)
   const tick = useMascotChannels(s => s.tick)
@@ -47,7 +48,7 @@ const Scene = ({ bodyCenterRef, pointer3DRef, setMascotCenterPx }: SceneProps) =
   }, [gl])
   const raycasterRef = useRef(new THREE.Raycaster())
   const ndcRef = useRef(new THREE.Vector2())
-  const pointer3DTargetRef = useRef(new THREE.Vector3())
+  const pointer3dTargetRef = useRef(new THREE.Vector3())
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
       const rect = gl.domElement.getBoundingClientRect()
@@ -57,7 +58,7 @@ const Scene = ({ bodyCenterRef, pointer3DRef, setMascotCenterPx }: SceneProps) =
       const dir = raycasterRef.current.ray.direction
       const denom = dir.z === 0 ? 0.0001 : dir.z
       const t = -raycasterRef.current.ray.origin.z / denom
-      pointer3DTargetRef.current.copy(raycasterRef.current.ray.origin).addScaledVector(dir, t)
+      pointer3dTargetRef.current.copy(raycasterRef.current.ray.origin).addScaledVector(dir, t)
     }
     globalThis.addEventListener('pointermove', onMove)
     return () => globalThis.removeEventListener('pointermove', onMove)
@@ -98,8 +99,8 @@ const Scene = ({ bodyCenterRef, pointer3DRef, setMascotCenterPx }: SceneProps) =
       last = now
       decay(dt)
       tick(dt)
-      const target = pointer3DTargetRef.current
-      const { current } = pointer3DRef
+      const target = pointer3dTargetRef.current
+      const { current } = pointer3dRef
       const alpha = 1 - Math.exp(-config.smoothing.pointerK * dt)
       current.x += (target.x - current.x) * alpha
       current.y += (target.y - current.y) * alpha
@@ -108,7 +109,7 @@ const Scene = ({ bodyCenterRef, pointer3DRef, setMascotCenterPx }: SceneProps) =
     }
     raf = requestAnimationFrame(loop)
     return () => cancelAnimationFrame(raf)
-  }, [config.smoothing.pointerK, decay, tick, pointer3DRef])
+  }, [config.smoothing.pointerK, decay, tick, pointer3dRef])
   return (
     <>
       {/* biome-ignore lint/suspicious/noUnknownAttribute: react-three-fiber three.js light props */}
@@ -117,15 +118,15 @@ const Scene = ({ bodyCenterRef, pointer3DRef, setMascotCenterPx }: SceneProps) =
       <directionalLight color='#ffffff' intensity={1.2} position={LIGHT_POS} />
       {/* biome-ignore lint/suspicious/noUnknownAttribute: react-three-fiber three.js light props */}
       <pointLight color='#ffffff' intensity={0.6} position={POINT_LIGHT_POS} />
-      <MascotBody onCenter={onCenter} pointer3D={pointer3DRef.current} />
-      <MascotEyes bodyCenter={bodyCenterRef.current} pointer3D={pointer3DRef.current} />
+      <MascotBody onCenter={onCenter} pointer3D={pointer3dRef.current} />
+      <MascotEyes bodyCenter={bodyCenterRef.current} pointer3D={pointer3dRef.current} />
     </>
   )
 }
 const MascotCanvas = () => {
   const config = useGhostoConfig()
   useMascotDna()
-  const pointer3DRef = useRef(new THREE.Vector3())
+  const pointer3dRef = useRef(new THREE.Vector3())
   const bodyCenterRef = useRef(new THREE.Vector3())
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const reducedMotion = useReducedMotion()
@@ -134,6 +135,7 @@ const MascotCanvas = () => {
     () => ({
       fov: config.camera.fovDeg,
       near: config.camera.near,
+      // biome-ignore lint/nursery/noUnsafeTypeAssertion: a fixed 3-element literal narrowed to the [x,y,z] tuple three.js expects
       position: [0, 0, config.camera.zDefault] as [number, number, number]
     }),
     [config.camera.fovDeg, config.camera.near, config.camera.zDefault]
@@ -155,12 +157,13 @@ const MascotCanvas = () => {
       return
     }
     if (!search.includes('test=1')) return
-    const probe = globalThis as unknown as { __mascot?: unknown }
+    // biome-ignore lint/nursery/noUnsafeTypeAssertion: test-only debug probe attaching a handle to globalThis under ?test=1
+    const probe = globalThis as { __mascot?: unknown }
     probe.__mascot = {
       body: bodyCenterRef.current,
       channels: useMascotChannels.getState,
       lost,
-      pointer3D: pointer3DRef.current
+      pointer3D: pointer3dRef.current
     }
   }, [lost])
   return (
@@ -175,7 +178,7 @@ const MascotCanvas = () => {
           setGlReady(true)
         }}>
         {glReady ? (
-          <Scene bodyCenterRef={bodyCenterRef} pointer3DRef={pointer3DRef} setMascotCenterPx={setMascotCenter} />
+          <Scene bodyCenterRef={bodyCenterRef} pointer3dRef={pointer3dRef} setMascotCenterPx={setMascotCenter} />
         ) : null}
       </Canvas>
       {lost ? <SvgFallback /> : null}

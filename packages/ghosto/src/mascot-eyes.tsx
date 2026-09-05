@@ -1,3 +1,5 @@
+/** biome-ignore-all lint/performance/noNamespaceImport: three.js is consumed as a namespace (THREE.*) by convention */
+/** biome-ignore-all lint/nursery/noUnsafeTypeAssertion: three.js shader boundary — fixed-length spatial literals narrowed to tuples, and a material downcast to ShaderMaterial to read its typed uniforms */
 /* oxlint-disable import/no-namespace */
 /* eslint-disable react/no-unknown-property, @eslint-react/dom-no-unknown-property */
 'use client'
@@ -66,7 +68,7 @@ const SingleEye = ({
       probeSearch = ''
     }
     if (probeSearch.includes('test=1')) {
-      const probe = globalThis as unknown as { __mascotEyes?: THREE.Mesh[] }
+      const probe = globalThis as { __mascotEyes?: THREE.Mesh[] }
       probe.__mascotEyes ??= []
       if (!probe.__mascotEyes.includes(mesh)) probe.__mascotEyes.push(mesh)
     }
@@ -77,7 +79,7 @@ const SingleEye = ({
       uHighlight: { value: number }
       uSad: { value: number }
     }
-    const matUniforms = (mesh.material as THREE.ShaderMaterial).uniforms as unknown as EyeUniforms
+    const matUniforms = (mesh.material as THREE.ShaderMaterial).uniforms as EyeUniforms
     state.camera.getWorldPosition(matUniforms.uCameraPos.value)
     const anchorX = bodyCenter.x + side * eyes.halfSpacing
     const anchorY = bodyCenter.y + eyes.verticalOffset
